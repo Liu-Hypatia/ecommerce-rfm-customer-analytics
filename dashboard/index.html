@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>电商零售 BI 看板</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="hero">
+        <div>
+          <p class="eyebrow">Retail BI Dashboard</p>
+          <h1>电商零售经营与用户分层看板</h1>
+          <p class="subtitle">基于模拟订单数据、SQL 指标结果和 RFM 用户分层输出，跟踪 GMV、订单量、客单价、复购率、品类贡献和客群运营重点。</p>
+        </div>
+        <div class="control-panel">
+          <label for="monthSelect">月份</label>
+          <select id="monthSelect"></select>
+          <label for="segmentSelect">用户分群</label>
+          <select id="segmentSelect"></select>
+        </div>
+      </section>
+
+      <section class="kpi-grid" id="kpiGrid" aria-label="核心指标"></section>
+
+      <section class="dashboard-grid">
+        <article class="panel panel-wide">
+          <div class="panel-head">
+            <div>
+              <h2>月度经营趋势</h2>
+              <p>GMV、订单量、客单价和复购率的时间变化</p>
+            </div>
+          </div>
+          <div id="trendChart" class="chart"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>用户分群 GMV 占比</h2>
+              <p>识别最重要的客户资产</p>
+            </div>
+          </div>
+          <div id="segmentChart" class="chart"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>品类销售贡献</h2>
+              <p>按 GMV 排序的核心品类</p>
+            </div>
+          </div>
+          <div id="categoryChart" class="chart"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>注册渠道表现</h2>
+              <p>不同获客渠道贡献对比</p>
+            </div>
+          </div>
+          <div id="channelChart" class="chart"></div>
+        </article>
+
+        <article class="panel">
+          <div class="panel-head">
+            <div>
+              <h2>高消费客户 Top 10</h2>
+              <p>客户级累计实付金额</p>
+            </div>
+          </div>
+          <div id="topCustomerChart" class="chart"></div>
+        </article>
+
+        <article class="panel panel-wide">
+          <div class="panel-head">
+            <div>
+              <h2>用户分群策略表</h2>
+              <p>分群规模、GMV 贡献、最近购买间隔和运营动作</p>
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>用户分群</th>
+                  <th>客户数</th>
+                  <th>GMV</th>
+                  <th>GMV 占比</th>
+                  <th>平均最近购买间隔</th>
+                  <th>运营建议</th>
+                </tr>
+              </thead>
+              <tbody id="segmentTable"></tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="./data.js"></script>
+    <script src="./dashboard.js"></script>
+  </body>
+</html>
+

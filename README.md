@@ -1,14 +1,12 @@
 # 电商零售 RFM 用户分层与经营分析项目
 
-这是一个面向数据分析、商业分析、BI 分析、用户增长分析实习岗位的作品集项目。
+这是一个围绕电商零售经营分析场景构建的端到端数据分析项目。
 
 项目从电商交易明细数据出发，完成数据生成、数据清洗、SQL 指标计算、RFM 用户分层和运营策略输出，展示从“原始订单数据”到“可执行业务建议”的完整分析流程。
 
-本项目参考了 GitHub 上公开的电商 RFM 用户分层项目思路，但代码、模拟数据生成逻辑、SQL 查询、分析流程和输出结果均为原创实现。
-
 ## 项目亮点
 
-很多数据分析实习岗位会要求 SQL、Python、用户行为分析、指标体系、看板思维和业务建议能力。本项目覆盖这些核心要求：
+项目覆盖从数据准备、指标计算、用户分层到 BI 看板展示的完整流程：
 
 1. 使用 Python 生成模拟电商客户与订单数据。
 2. 使用 SQLite 构建轻量级分析数据库。
@@ -16,6 +14,7 @@
 4. 基于 Recency、Frequency、Monetary 构建客户 RFM 指标。
 5. 将客户划分为高价值用户、忠诚用户、潜力用户、流失风险用户等群体。
 6. 输出可接入 Excel、Power BI、Tableau 或 Streamlit 的分析结果表。
+7. 提供一个纯前端 BI 看板，用于展示核心经营指标、用户分群和运营建议。
 
 ## 项目结构
 
@@ -34,11 +33,18 @@ ecommerce-rfm-customer-analytics/
     monthly_kpi.csv
     segment_summary.csv
     customer_segments.csv
+  dashboard/
+    README.md
+    index.html
+    styles.css
+    dashboard.js
+    data.js
   sql/
     analysis_queries.sql
   src/
     generate_sample_data.py
     run_analysis.py
+    build_dashboard_data.py
 ```
 
 ## 快速运行
@@ -48,6 +54,7 @@ ecommerce-rfm-customer-analytics/
 ```bash
 python src/generate_sample_data.py
 python src/run_analysis.py
+python src/build_dashboard_data.py
 ```
 
 运行后会在 `outputs/` 目录生成：
@@ -55,6 +62,31 @@ python src/run_analysis.py
 - `monthly_kpi.csv`：月度 GMV、订单量、活跃用户、客单价和复购率
 - `segment_summary.csv`：用户分群规模、GMV 贡献和运营建议
 - `customer_segments.csv`：客户级 RFM 指标、评分和分群标签
+
+同时会在 `dashboard/` 目录生成看板数据文件 `data.js`。
+
+## BI 看板
+
+本项目包含一个可直接展示的电商零售 BI 看板，覆盖：
+
+- 月度 GMV、订单量、活跃客户数、客单价和复购率
+- 用户分群 GMV 占比
+- 品类销售贡献
+- 注册渠道表现
+- 高消费客户 Top 10
+- 分群运营策略表
+
+本地预览方式：
+
+```bash
+python -m http.server 8000
+```
+
+然后打开：
+
+```text
+http://localhost:8000/dashboard/
+```
 
 ## 分析逻辑
 
@@ -89,11 +121,3 @@ python src/run_analysis.py
 - 哪些用户应该优先做召回或留存运营？
 - 收入增长主要来自订单量提升，还是客单价提升？
 - 哪些用户适合发会员权益、门槛券、品类推荐或限时召回券？
-
-## 参考项目
-
-以下公开项目帮助确定了 RFM 分析主题和业务分析框架：
-
-- https://github.com/yulianthyho/Olist-Ecommerce-RFM-Customer-Segmentation
-- https://github.com/rppradhan08/rfm-segmentation
-- https://github.com/mustafaa7med/RFM-Based-Customer-Segmentation
