@@ -1,0 +1,8 @@
+segment,customers,gmv,gmv_share,avg_recency_days,recommendation
+Loyal Customers,167,735533.94,0.3752,56.5,Use membership points and cross-sell bundles to increase basket size.
+Champions,97,519610.03,0.265,12.9,"Offer loyalty benefits, early access, and referral rewards."
+Needs Nurture,115,270243.21,0.1378,69.7,Use lifecycle messaging and product preference tagging.
+Potential Loyalists,82,190340.79,0.0971,13.4,Send personalized coupons and category recommendations.
+At Risk,41,127656.15,0.0651,106.9,Launch win-back campaigns with limited-time offers.
+Hibernating,77,87434.82,0.0446,142.9,Reduce high-cost campaigns; test low-cost reactivation messages.
+New Customers,18,29711.98,0.0152,13.4,Guide first repeat purchase with onboarding and threshold coupons.
