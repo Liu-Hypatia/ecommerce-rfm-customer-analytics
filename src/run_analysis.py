@@ -17,7 +17,7 @@ def require_data() -> None:
     missing = [str(p) for p in [CUSTOMERS_CSV, ORDERS_CSV] if not p.exists()]
     if missing:
         raise FileNotFoundError(
-            "Missing generated data files. Run `python src/generate_sample_data.py` first. "
+            "缺少模拟数据文件，请先运行 `python src/generate_sample_data.py`。"
             + ", ".join(missing)
         )
 
@@ -40,11 +40,18 @@ def load_csv(conn: sqlite3.Connection, table_name: str, csv_path: Path) -> None:
 def write_query(conn: sqlite3.Connection, query: str, out_path: Path) -> List[Dict]:
     cur = conn.execute(query)
     rows = [dict(zip([col[0] for col in cur.description], row)) for row in cur.fetchall()]
-    with out_path.open("w", newline="", encoding="utf-8") as f:
+    with out_path.open("w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
         writer.writerows(rows)
     return rows
+
+
+def write_rows(rows: List[Dict], out_path: Path, fieldnames: List[str]) -> None:
+    with out_path.open("w", newline="", encoding="utf-8-sig") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer.writeheader()
+        writer.writerows(rows)
 
 
 def rfm_score(values: List[float], value: float, reverse: bool = False) -> int:
@@ -59,29 +66,29 @@ def rfm_score(values: List[float], value: float, reverse: bool = False) -> int:
 
 def segment_customer(r: int, f: int, m: int) -> str:
     if r >= 4 and f >= 4 and m >= 4:
-        return "Champions"
+        return "高价值用户"
     if f >= 4 and m >= 3:
-        return "Loyal Customers"
+        return "忠诚用户"
     if r >= 4 and f >= 2:
-        return "Potential Loyalists"
+        return "潜力用户"
     if r <= 2 and (f >= 4 or m >= 4):
-        return "At Risk"
+        return "流失风险用户"
     if r <= 2 and f <= 2 and m <= 2:
-        return "Hibernating"
+        return "沉睡用户"
     if r >= 4 and f == 1:
-        return "New Customers"
-    return "Needs Nurture"
+        return "新用户"
+    return "待培育用户"
 
 
 def recommendation(segment: str) -> str:
     mapping = {
-        "Champions": "Offer loyalty benefits, early access, and referral rewards.",
-        "Loyal Customers": "Use membership points and cross-sell bundles to increase basket size.",
-        "Potential Loyalists": "Send personalized coupons and category recommendations.",
-        "At Risk": "Launch win-back campaigns with limited-time offers.",
-        "Hibernating": "Reduce high-cost campaigns; test low-cost reactivation messages.",
-        "New Customers": "Guide first repeat purchase with onboarding and threshold coupons.",
-        "Needs Nurture": "Use lifecycle messaging and product preference tagging.",
+        "高价值用户": "提供会员权益、新品优先体验和推荐奖励，提升留存与口碑传播。",
+        "忠诚用户": "通过会员积分、组合购和交叉销售提升客单价。",
+        "潜力用户": "推送个性化优惠券和品类推荐，引导形成稳定复购。",
+        "流失风险用户": "设计限时召回活动，优先触达历史消费价值较高的客户。",
+        "沉睡用户": "控制高成本投放，测试低成本唤醒消息和基础优惠。",
+        "新用户": "通过新客引导、首单后关怀和门槛券促进第二次购买。",
+        "待培育用户": "结合生命周期消息和品类偏好标签，提升活跃度和转化率。",
     }
     return mapping[segment]
 
@@ -94,7 +101,7 @@ WITH valid_orders AS (
         substr(order_date, 1, 7) AS order_month,
         CAST(paid_amount AS REAL) AS paid_amount
     FROM orders
-    WHERE order_status = 'paid'
+    WHERE order_status = '已支付'
 ),
 monthly_customer_orders AS (
     SELECT
@@ -105,16 +112,16 @@ monthly_customer_orders AS (
     GROUP BY order_month, customer_id
 )
 SELECT
-    v.order_month,
-    ROUND(SUM(v.paid_amount), 2) AS gmv,
-    COUNT(DISTINCT v.order_id) AS orders,
-    COUNT(DISTINCT v.customer_id) AS active_customers,
-    ROUND(SUM(v.paid_amount) / COUNT(DISTINCT v.order_id), 2) AS aov,
+    v.order_month AS 月份,
+    ROUND(SUM(v.paid_amount), 2) AS GMV,
+    COUNT(DISTINCT v.order_id) AS 订单量,
+    COUNT(DISTINCT v.customer_id) AS 活跃客户数,
+    ROUND(SUM(v.paid_amount) / COUNT(DISTINCT v.order_id), 2) AS 客单价,
     ROUND(
         1.0 * COUNT(DISTINCT CASE WHEN m.order_count > 1 THEN m.customer_id END)
         / COUNT(DISTINCT m.customer_id),
         4
-    ) AS repeat_purchase_rate
+    ) AS 复购率
 FROM valid_orders v
 JOIN monthly_customer_orders m
     ON v.order_month = m.order_month
@@ -131,7 +138,7 @@ WITH valid_orders AS (
         order_date,
         CAST(paid_amount AS REAL) AS paid_amount
     FROM orders
-    WHERE order_status = 'paid'
+    WHERE order_status = '已支付'
 ),
 max_date AS (
     SELECT MAX(order_date) AS analysis_date
@@ -180,10 +187,25 @@ def main() -> None:
         )
 
     customer_path = OUTPUT_DIR / "customer_segments.csv"
-    with customer_path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(enriched[0].keys()))
-        writer.writeheader()
-        writer.writerows(enriched)
+    customer_rows = [
+        {
+            "客户ID": row["customer_id"],
+            "最近购买间隔天数": row["recency_days"],
+            "购买频次": row["frequency"],
+            "累计消费金额": row["monetary"],
+            "R评分": row["r_score"],
+            "F评分": row["f_score"],
+            "M评分": row["m_score"],
+            "RFM评分": row["rfm_score"],
+            "用户分群": row["segment"],
+        }
+        for row in enriched
+    ]
+    write_rows(
+        customer_rows,
+        customer_path,
+        ["客户ID", "最近购买间隔天数", "购买频次", "累计消费金额", "R评分", "F评分", "M评分", "RFM评分", "用户分群"],
+    )
 
     segment_map = {}
     for row in enriched:
@@ -200,26 +222,27 @@ def main() -> None:
     for item in segment_map.values():
         summary.append(
             {
-                "segment": item["segment"],
-                "customers": item["customers"],
-                "gmv": round(item["gmv"], 2),
-                "gmv_share": round(item["gmv"] / total_gmv, 4),
-                "avg_recency_days": round(item["avg_recency"] / item["customers"], 1),
-                "recommendation": recommendation(item["segment"]),
+                "用户分群": item["segment"],
+                "客户数": item["customers"],
+                "GMV": round(item["gmv"], 2),
+                "GMV占比": round(item["gmv"] / total_gmv, 4),
+                "平均最近购买间隔天数": round(item["avg_recency"] / item["customers"], 1),
+                "运营建议": recommendation(item["segment"]),
             }
         )
-    summary.sort(key=lambda x: x["gmv"], reverse=True)
+    summary.sort(key=lambda x: x["GMV"], reverse=True)
 
     summary_path = OUTPUT_DIR / "segment_summary.csv"
-    with summary_path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=list(summary[0].keys()))
-        writer.writeheader()
-        writer.writerows(summary)
+    write_rows(
+        summary,
+        summary_path,
+        ["用户分群", "客户数", "GMV", "GMV占比", "平均最近购买间隔天数", "运营建议"],
+    )
 
-    print(f"Monthly KPI rows: {len(monthly_rows)}")
-    print(f"Customer segment rows: {len(enriched)}")
-    print(f"Segment summary rows: {len(summary)}")
-    print(f"Outputs written to {OUTPUT_DIR}")
+    print(f"月度 KPI 行数：{len(monthly_rows)}")
+    print(f"客户分层行数：{len(enriched)}")
+    print(f"分群汇总行数：{len(summary)}")
+    print(f"输出目录：{OUTPUT_DIR}")
 
 
 if __name__ == "__main__":

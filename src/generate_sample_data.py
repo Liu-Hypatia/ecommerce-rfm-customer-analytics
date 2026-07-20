@@ -10,17 +10,17 @@ DATA_DIR.mkdir(exist_ok=True)
 
 random.seed(20260720)
 
-REGIONS = ["Guangzhou", "Shenzhen", "Shanghai", "Beijing", "Chengdu", "Hangzhou"]
-CHANNELS = ["organic", "paid_search", "social", "referral", "app_store"]
+REGIONS = ["广州", "深圳", "上海", "北京", "成都", "杭州"]
+CHANNELS = ["自然流量", "搜索广告", "社交媒体", "好友推荐", "应用商店"]
 CATEGORIES = {
-    "beauty": (39, 299),
-    "electronics": (99, 1299),
-    "home": (29, 499),
-    "sports": (49, 599),
-    "fashion": (59, 699),
-    "food": (19, 199),
+    "美妆个护": (39, 299),
+    "数码电子": (99, 1299),
+    "家居日用": (29, 499),
+    "运动户外": (49, 599),
+    "服饰鞋包": (59, 699),
+    "食品饮料": (19, 199),
 }
-STATUSES = ["paid", "paid", "paid", "paid", "cancelled", "refunded"]
+STATUSES = ["已支付", "已支付", "已支付", "已支付", "已取消", "已退款"]
 
 
 def random_date(start: date, end: date) -> date:
@@ -95,9 +95,8 @@ def write_orders(order_count: int = 5200, customer_count: int = 600) -> None:
 def main() -> None:
     write_customers()
     write_orders()
-    print(f"Generated synthetic data in {DATA_DIR}")
+    print(f"已生成模拟数据：{DATA_DIR}")
 
 
 if __name__ == "__main__":
     main()
-

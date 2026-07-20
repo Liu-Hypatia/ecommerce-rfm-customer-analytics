@@ -1,8 +1,8 @@
-segment,customers,gmv,gmv_share,avg_recency_days,recommendation
-Loyal Customers,167,735533.94,0.3752,56.5,Use membership points and cross-sell bundles to increase basket size.
-Champions,97,519610.03,0.265,12.9,"Offer loyalty benefits, early access, and referral rewards."
-Needs Nurture,115,270243.21,0.1378,69.7,Use lifecycle messaging and product preference tagging.
-Potential Loyalists,82,190340.79,0.0971,13.4,Send personalized coupons and category recommendations.
-At Risk,41,127656.15,0.0651,106.9,Launch win-back campaigns with limited-time offers.
-Hibernating,77,87434.82,0.0446,142.9,Reduce high-cost campaigns; test low-cost reactivation messages.
-New Customers,18,29711.98,0.0152,13.4,Guide first repeat purchase with onboarding and threshold coupons.
+﻿用户分群,客户数,GMV,GMV占比,平均最近购买间隔天数,运营建议
+忠诚用户,167,735533.94,0.3752,56.5,通过会员积分、组合购和交叉销售提升客单价。
+高价值用户,97,519610.03,0.265,12.9,提供会员权益、新品优先体验和推荐奖励，提升留存与口碑传播。
+待培育用户,115,270243.21,0.1378,69.7,结合生命周期消息和品类偏好标签，提升活跃度和转化率。
+潜力用户,82,190340.79,0.0971,13.4,推送个性化优惠券和品类推荐，引导形成稳定复购。
+流失风险用户,41,127656.15,0.0651,106.9,设计限时召回活动，优先触达历史消费价值较高的客户。
+沉睡用户,77,87434.82,0.0446,142.9,控制高成本投放，测试低成本唤醒消息和基础优惠。
+新用户,18,29711.98,0.0152,13.4,通过新客引导、首单后关怀和门槛券促进第二次购买。
