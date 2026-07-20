@@ -90,18 +90,6 @@ python src/run_analysis.py
 - 收入增长主要来自订单量提升，还是客单价提升？
 - 哪些用户适合发会员权益、门槛券、品类推荐或限时召回券？
 
-## 简历适配方向
-
-这个项目适合用于投递：
-
-- 数据分析实习生
-- 商业分析实习生
-- BI 分析实习生
-- 用户/产品数据分析实习生
-- 增长分析/数据运营实习生
-
-中文简历项目描述见：`docs/resume_bullets_zh.md`
-
 ## 参考项目
 
 以下公开项目帮助确定了 RFM 分析主题和业务分析框架：
@@ -109,4 +97,3 @@ python src/run_analysis.py
 - https://github.com/yulianthyho/Olist-Ecommerce-RFM-Customer-Segmentation
 - https://github.com/rppradhan08/rfm-segmentation
 - https://github.com/mustafaa7med/RFM-Based-Customer-Segmentation
-
